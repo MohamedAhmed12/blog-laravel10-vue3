@@ -1,16 +1,18 @@
 import { ref } from "vue";
 
 const state = {
-  user: ref(null),
-  token: ref(null),
+  user: ref(JSON.parse(localStorage.getItem("user")) || null),
+  token: ref(localStorage.getItem("token") || null),
 };
 
 const mutations = {
   setUser(state, payload) {
     state.user = payload;
+    localStorage.setItem("user", JSON.stringify(payload));
   },
   setToken(state, payload) {
     state.token = payload;
+    localStorage.setItem("token", payload);
   },
 };
 
@@ -23,7 +25,7 @@ const actions = {
 
 const getters = {
   isLoggedIn() {
-    return state.user.value !== null;
+    return state.user !== null && state.user.value !== null;
   },
   getToken() {
     return state.token.value;

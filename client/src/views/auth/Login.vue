@@ -1,12 +1,13 @@
 <script setup>
-import { computed, ref } from "vue";
-import axios from "../plugins/axios";
-import LoginForm from "../components/LoginForm.vue";
+import { ref } from "vue";
+import axios from "../../plugins/axios";
+import LoginForm from "../../components/LoginForm.vue";
 
 import { useStore } from "vuex";
-import { mapGetters } from "vuex";
+import { useRouter } from "vue-router";
 
 const store = useStore();
+const router = useRouter();
 const formData = ref({
   email: "",
   password: "",
@@ -16,6 +17,7 @@ const login = async () => {
   try {
     const response = await axios.post("login", formData.value);
     store.dispatch("auth/setAuthUser", response?.data);
+    router.push({ path: "/dashboard/blogs" });
   } catch (error) {
     console.error("Login failed:", error?.response?.data || error);
   }
@@ -34,7 +36,7 @@ const login = async () => {
 
 <style scoped>
 .login-main-container {
-  background-image: url("../assets/login-bg.jpg");
+  background-image: url("../../assets/login-bg.jpg");
   background-size: cover;
   background-position: center;
 }
