@@ -1,8 +1,12 @@
 <script setup>
-import { ref } from "vue";
-import axios from "axios";
+import { computed, ref } from "vue";
+import axios from "../plugins/axios";
 import LoginForm from "../components/LoginForm.vue";
 
+import { useStore } from "vuex";
+import { mapGetters } from "vuex";
+
+const store = useStore();
 const formData = ref({
   email: "",
   password: "",
@@ -10,10 +14,10 @@ const formData = ref({
 
 const login = async () => {
   try {
-    const response = await axios.post("/api/login", formData.value);
-    console.log(response.data);
+    const response = await axios.post("login", formData.value);
+    store.dispatch("auth/setAuthUser", response?.data);
   } catch (error) {
-    console.error("Login failed:", error.response.data);
+    console.error("Login failed:", error?.response?.data || error);
   }
 };
 </script>
