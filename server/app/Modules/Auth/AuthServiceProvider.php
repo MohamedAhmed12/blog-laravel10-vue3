@@ -1,8 +1,11 @@
 <?php
 
-namespace App\Providers;
+namespace App\Modules\Auth;
 
 // use Illuminate\Support\Facades\Gate;
+
+use App\Modules\Auth\Models\Sanctum\PersonalAccessToken;
+use Laravel\Sanctum\Sanctum;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -21,6 +24,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        $this->loadRoutesFrom(__DIR__ . '/Routes/api.php');
+        Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
     }
 }
