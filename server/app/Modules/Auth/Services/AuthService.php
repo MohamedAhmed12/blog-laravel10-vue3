@@ -12,7 +12,10 @@ class AuthService
     {
         if (Auth::attempt($data->toArray())) {
             $user = Auth::user();
-            return $user->createToken('authToken')->plainTextToken;
+            return [
+                'user' => $user,
+                'token' => $user->createToken('authToken')->plainTextToken
+            ];
         }
     }
 }

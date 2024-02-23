@@ -31,10 +31,10 @@ class AuthController extends BaseController
 
         $loginDTO = new LoginDTO(...$validatedData);
 
-        $token = $this->authService->login($loginDTO);
+        $res = $this->authService->login($loginDTO);
 
-        if ($token) {
-            return response()->json(['token' => $token], 200);
+        if ($res) {
+            return response()->json($res, 200);
         } else {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
