@@ -1,0 +1,37 @@
+<script setup>
+import { ref } from "vue";
+import axios from "axios";
+import LoginForm from "../components/LoginForm.vue";
+
+const formData = ref({
+  email: "",
+  password: "",
+});
+
+const login = async () => {
+  try {
+    const response = await axios.post("/api/login", formData.value);
+    console.log(response.data);
+  } catch (error) {
+    console.error("Login failed:", error.response.data);
+  }
+};
+</script>
+
+<template>
+  <v-container fluid class="login-main-container fill-height flex-wrap pa-0">
+    <v-row class="fill-height">
+      <v-col cols="12" md="6" offset-md="6" class="bg-white">
+        <LoginForm :login="login" :formData="formData" />
+      </v-col>
+    </v-row>
+  </v-container>
+</template>
+
+<style scoped>
+.login-main-container {
+  background-image: url("../assets/login-bg.jpg");
+  background-size: cover;
+  background-position: center;
+}
+</style>
