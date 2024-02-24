@@ -4,20 +4,20 @@ namespace App\Modules\Auth\DTOs;
 
 class LoginDTO
 {
-    public string $email;
+    public string $username;
     public string $password;
 
 
-    public function __construct(string $email, string $password)
+    public function __construct(string $username, string $password)
     {
-        $this->email = $email;
+        $this->username = $username;
         $this->password = $password;
     }
 
     public function toArray(): array
     {
         return [
-            'email' => $this->email,
+            'username' => $this->username,
             'password' => $this->password,
         ];
     }
