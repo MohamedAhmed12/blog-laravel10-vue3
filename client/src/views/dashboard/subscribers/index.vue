@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed, inject } from "vue";
+import { ref, onMounted, computed, inject,nextTick } from "vue";
 import { mdiPencil, mdiDelete } from "@mdi/js";
 import axios from "../../../plugins/axios";
 import SvgIcon from "@jamescoyle/vue-icon";
@@ -7,6 +7,7 @@ import SvgIcon from "@jamescoyle/vue-icon";
 const toast = inject("toast");
 const subscribers = ref([]);
 const headers = ref([]);
+const errors = ref([]);
 const dialog = ref(false);
 const dialogDelete = ref(false);
 const editedIndex = ref(-1);
@@ -16,12 +17,11 @@ const editedSubscriber = ref({
   password: "",
   status: "",
 });
-const defaultItem = ref({
+const defaultSubscriber = ref({
   name: "",
-  calories: 0,
-  fat: 0,
-  carbs: 0,
-  protein: 0,
+  username: "",
+  password: "",
+  status: "",
 });
 
 onMounted(async () => {
@@ -98,7 +98,7 @@ const deleteSubscriberConfirm = async () => {
 const close = () => {
   dialog.value = false;
   nextTick(() => {
-    editedSubscriber.value = { ...defaultItem.value };
+    editedSubscriber.value = { ...defaultSubscriber.value };
     editedIndex.value = -1;
   });
 };
@@ -106,19 +106,32 @@ const close = () => {
 const closeDelete = () => {
   dialogDelete.value = false;
   nextTick(() => {
-    editedSubscriber.value = { ...defaultItem.value };
+    editedSubscriber.value = { ...defaultSubscriber.value };
     editedIndex.value = -1;
   });
 };
 
-const save = async () => {
+const createSubscriber = async () => {
+  try {
+    await axios.post(`subscribers`, editedSubscriber.value);
+
+    subscribers.value.push(editedSubscriber.value);
+    editSubscriber.value = [];
+    errors.value = [];
+    close();
+  } catch (error) {
+    if (error?.response?.data?.errors) {
+      errors.value = error.response.data.errors;
+    }
+  }
+};
+
+const save = () => {
   if (editedIndex.value > -1) {
     Object.assign(subscribers.value[editedIndex.value], editedSubscriber.value);
   } else {
-    await axios.post(`subscribers`, editedSubscriber.value);
-    subscribers.value.push(editedSubscriber.value);
+    createSubscriber();
   }
-  close();
 };
 </script>
 
@@ -163,25 +176,29 @@ const save = async () => {
                         <v-text-field
                           v-model="editedSubscriber.name"
                           label="Name"
+                          :error-messages="errors['name']"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
                           v-model="editedSubscriber.username"
                           label="Username"
+                          :error-messages="errors['username']"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
                           v-model="editedSubscriber.password"
                           label="Password"
+                          :error-messages="errors['password']"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
                         <v-select
                           v-model="editedSubscriber.status"
                           :items="['active', 'inactive']"
-                          label="status"
+                          label="Status"
+                          :error-messages="errors['status']"
                         ></v-select>
                       </v-col>
                     </v-row>
