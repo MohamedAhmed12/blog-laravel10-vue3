@@ -2,6 +2,7 @@
 
 namespace App\Modules\User\FormRequests;
 
+use App\Modules\User\Constants\UserStatuses;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateSubscriberRequest extends FormRequest
@@ -27,6 +28,7 @@ class CreateSubscriberRequest extends FormRequest
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username',
             'password' => 'required|string|min:8',
+            'status' => 'required|string|in:' .  implode(',', UserStatuses::getAll()),
         ];
     }
 }

@@ -20,7 +20,7 @@ class SubscriberService
         return User::create([
             'name' => $dto->name,
             'username' => $dto->username,
-            'password' =>  Crypt::encryptString($dto->password),
+            'password' =>  $dto->password,
             'role' => UserRoles::SUBSCRIBER,
         ]);
     }
