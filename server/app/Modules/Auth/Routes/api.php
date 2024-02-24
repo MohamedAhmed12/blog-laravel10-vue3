@@ -1,7 +1,5 @@
 <?php
 
-namespace App\Modules\User\Routes;
-
 use App\Modules\Auth\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
