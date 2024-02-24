@@ -8,5 +8,6 @@ final class UserServiceProvider extends AuthServiceProvider
 {
     public function boot()
     {
+        $this->loadRoutesFrom(__DIR__ . '/Routes/api.php');
     }
 }
