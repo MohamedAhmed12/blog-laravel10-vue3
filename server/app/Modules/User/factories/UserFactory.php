@@ -17,11 +17,6 @@ class UserFactory extends Factory
     protected $model = User::class;
 
     /**
-     * The current password being used by the factory.
-     */
-    protected static ?string $password;
-
-    /**
      * Define the model's default state.
      *
      * @return array<string, mixed>
@@ -31,7 +26,7 @@ class UserFactory extends Factory
         return [
             'name' => fake()->name(),
             'username' => fake()->name(),
-            'password' => static::$password ??= Crypt::encryptString('password')            ,
+            'password' => 'password',
             'remember_token' => Str::random(10),
         ];
     }
