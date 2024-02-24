@@ -1,8 +1,9 @@
+import { authMiddleware } from "@/middlewares/authMiddleware";
 import { createRouter, createWebHistory } from "vue-router";
+import DashboardLayout from "../layouts/DashboardLayout.vue";
 import Login from "../views/auth/Login.vue";
 import BlogList from "../views/dashboard/blogs/BlogList.vue";
-import DashboardLayout from "../layouts/DashboardLayout.vue";
-import { authMiddleware } from "@/middlewares/authMiddleware";
+import SubscriberIndex from "../views/dashboard/subscribers/index.vue";
 
 const routes = [
   {
@@ -17,6 +18,10 @@ const routes = [
       {
         path: "blogs",
         component: BlogList,
+      },
+      {
+        path: "subscribers",
+        component: SubscriberIndex,
       },
     ],
   },
