@@ -12,7 +12,7 @@ class SubscriberService
 {
     public function listSubscribers(): Collection
     {
-        return User::all();
+        return User::where('role', UserRoles::SUBSCRIBER)->get();
     }
 
     public function createSubscriber(CreateSubscriberDTO $dto): User
