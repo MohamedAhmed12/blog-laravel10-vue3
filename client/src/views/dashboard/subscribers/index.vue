@@ -33,7 +33,7 @@ onMounted(async () => {
     if (subscribers.value.length > 0) {
       const keys = Object.keys(subscribers.value[0]);
       headers.value = keys
-        .filter((key) => !["created_at", "updated_at"].includes(key))
+        .filter((key) => !["id", "created_at", "updated_at"].includes(key))
         .map((key) => {
           return {
             title: key.charAt(0).toUpperCase() + key.slice(1),
