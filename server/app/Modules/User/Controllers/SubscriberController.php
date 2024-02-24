@@ -32,4 +32,12 @@ class SubscriberController extends BaseController
 
         return response()->json($subscriber, 201);
     }
+
+
+    public function destroy(int $id): JsonResponse
+    {
+        $this->subscriberService->deleteSubscriber($id);
+
+        return response()->json(null, 204);
+    }
 }

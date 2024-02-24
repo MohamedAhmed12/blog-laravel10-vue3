@@ -24,4 +24,10 @@ class SubscriberService
             'role' => UserRoles::SUBSCRIBER,
         ]);
     }
+
+    public function deleteSubscriber(int $id): void
+    {
+        $subscriber = User::findOrFail($id);
+        $subscriber->delete();
+    }
 }
