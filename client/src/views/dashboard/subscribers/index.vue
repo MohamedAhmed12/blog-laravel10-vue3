@@ -10,12 +10,11 @@ const headers = ref([]);
 const dialog = ref(false);
 const dialogDelete = ref(false);
 const editedIndex = ref(-1);
-const editedItem = ref({
+const editedSubscriber = ref({
   name: "",
-  calories: 0,
-  fat: 0,
-  carbs: 0,
-  protein: 0,
+  username: "",
+  password: "",
+  status: "",
 });
 const defaultItem = ref({
   name: "",
@@ -74,21 +73,21 @@ const initialize = () => {
   return subscribers;
 };
 
-const editItem = (item) => {
-  editedIndex.value = subscribers.value.indexOf(item);
-  editedItem.value = { ...item };
+const editSubscriber = (subscriber) => {
+  editedIndex.value = subscribers.value.indexOf(subscriber);
+  editedSubscriber.value = { ...subscriber };
   dialog.value = true;
 };
 
-const deleteSubscriber = (item) => {
-  editedIndex.value = subscribers.value.indexOf(item);
-  editedItem.value = { ...item };
+const deleteSubscriber = (subscriber) => {
+  editedIndex.value = subscribers.value.indexOf(subscriber);
+  editedSubscriber.value = { ...subscriber };
   dialogDelete.value = true;
 };
 
 const deleteSubscriberConfirm = async () => {
   try {
-    await axios.delete(`subscribers/${editedItem.value.id}`);
+    await axios.delete(`subscribers/${editedSubscriber.value.id}`);
     subscribers.value.splice(editedIndex.value, 1);
     closeDelete();
   } catch (error) {
@@ -99,7 +98,7 @@ const deleteSubscriberConfirm = async () => {
 const close = () => {
   dialog.value = false;
   nextTick(() => {
-    editedItem.value = { ...defaultItem.value };
+    editedSubscriber.value = { ...defaultItem.value };
     editedIndex.value = -1;
   });
 };
@@ -107,16 +106,17 @@ const close = () => {
 const closeDelete = () => {
   dialogDelete.value = false;
   nextTick(() => {
-    editedItem.value = { ...defaultItem.value };
+    editedSubscriber.value = { ...defaultItem.value };
     editedIndex.value = -1;
   });
 };
 
-const save = () => {
+const save = async () => {
   if (editedIndex.value > -1) {
-    Object.assign(subscribers.value[editedIndex.value], editedItem.value);
+    Object.assign(subscribers.value[editedIndex.value], editedSubscriber.value);
   } else {
-    subscribers.value.push(editedItem.value);
+    await axios.post(`subscribers`, editedSubscriber.value);
+    subscribers.value.push(editedSubscriber.value);
   }
   close();
 };
@@ -145,7 +145,7 @@ const save = () => {
             <v-spacer></v-spacer>
 
             <!-- edit dialog  -->
-            <v-dialog v-model="dialog" max-width="500px">
+            <v-dialog v-model="dialog" max-width="700px">
               <template v-slot:activator="{ props }">
                 <v-btn color="primary" dark class="mb-2" v-bind="props">
                   New Item
@@ -161,33 +161,28 @@ const save = () => {
                     <v-row>
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
-                          v-model="editedItem.name"
-                          label="Dessert name"
+                          v-model="editedSubscriber.name"
+                          label="Name"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
-                          v-model="editedItem.calories"
-                          label="Calories"
+                          v-model="editedSubscriber.username"
+                          label="Username"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
-                          v-model="editedItem.fat"
-                          label="Fat (g)"
+                          v-model="editedSubscriber.password"
+                          label="Password"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.carbs"
-                          label="Carbs (g)"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.protein"
-                          label="Protein (g)"
-                        ></v-text-field>
+                        <v-select
+                          v-model="editedSubscriber.status"
+                          :items="['active', 'inactive']"
+                          label="status"
+                        ></v-select>
                       </v-col>
                     </v-row>
                   </v-container>
@@ -206,7 +201,7 @@ const save = () => {
             </v-dialog>
 
             <!-- delete dialog  -->
-            <v-dialog v-model="dialogDelete" max-width="500px">
+            <v-dialog v-model="dialogDelete" max-width="700px">
               <v-card>
                 <v-card-title class="text-h5"
                   >Are you sure you want to delete this item?</v-card-title
@@ -244,7 +239,7 @@ const save = () => {
               <svg-icon
                 type="mdi"
                 :path="mdiPencil"
-                @click="editItem(item)"
+                @click="editSubscriber(item)"
                 class="mr-2 pointer"
               ></svg-icon>
               <svg-icon
