@@ -16,6 +16,13 @@ class SubscriberController extends BaseController
     {
         $this->subscriberService = $subscriberService;
     }
+    
+    public function index(): JsonResponse
+    {
+        $subscriberDTOs = $this->subscriberService->listSubscribers();
+
+        return response()->json($subscriberDTOs);
+    }
 
     public function store(CreateSubscriberRequest $request): JsonResponse
     {
