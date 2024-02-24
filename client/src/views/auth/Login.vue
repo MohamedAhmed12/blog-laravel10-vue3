@@ -9,7 +9,7 @@ import { useRouter } from "vue-router";
 const store = useStore();
 const router = useRouter();
 const formData = ref({
-  email: "",
+  username: "",
   password: "",
 });
 

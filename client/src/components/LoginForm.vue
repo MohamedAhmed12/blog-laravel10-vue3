@@ -20,9 +20,9 @@ const onSubmit = () => {
             <v-form fast-fail @submit.prevent="login">
               <v-text-field
                 variant="underlined"
-                v-model="formData.email"
-                label="Email"
-                type="email"
+                v-model="formData.username"
+                label="username"
+                type="text"
                 required
               ></v-text-field>
 
