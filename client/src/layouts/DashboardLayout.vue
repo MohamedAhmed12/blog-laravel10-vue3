@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from "vue";
 import { useStore } from "vuex";
+import Header from "../components/dashboard/Header.vue";
 
 const store = useStore();
 
@@ -8,19 +9,16 @@ const user = computed(() => store.getters["auth/getUser"]);
 console.log(user);
 </script>
 
-
 <template>
-  <div>
-    <nav>
-      <router-link to="/dashboard">Home</router-link>
-      <router-link to="/dashboard/settings">Settings</router-link>
-      <router-link to="/dashboard/profile">Profile</router-link>
-    </nav>
-    {{ user }}
+  <v-app class="dashboard__layout">
+    <Header />
     <router-view></router-view>
-  </div>
+  </v-app>
 </template>
 
 <style>
-/* Component styles */
+.dashboard__layout {
+  padding-top: 100px;
+  background-color: aliceblue;
+}
 </style>
