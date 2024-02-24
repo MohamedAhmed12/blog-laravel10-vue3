@@ -1,9 +1,10 @@
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, inject } from "vue";
 import { mdiPencil, mdiDelete } from "@mdi/js";
 import axios from "../../../plugins/axios";
 import SvgIcon from "@jamescoyle/vue-icon";
 
+const toast = inject("toast");
 const subscribers = ref([]);
 const headers = ref([]);
 const dialog = ref(false);
@@ -43,7 +44,7 @@ onMounted(async () => {
       headers.value.push({ title: "Actions", key: "actions", sortable: false });
     }
   } catch (error) {
-    console.error("Error fetching subscribers:", error);
+    toast.error(error);
   }
 });
 
