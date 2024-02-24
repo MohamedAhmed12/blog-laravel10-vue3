@@ -6,7 +6,7 @@ use App\Modules\User\Constants\UserRoles;
 use App\Modules\User\Constants\UserStatuses;
 use App\Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
 
 /**
@@ -31,8 +31,7 @@ class UserFactory extends Factory
         return [
             'name' => fake()->name(),
             'username' => fake()->name(),
-            'password' => static::$password ??= Hash::make('password'),
-            'username' => fake()->name(),
+            'password' => static::$password ??= Crypt::encryptString('password')            ,
             'remember_token' => Str::random(10),
         ];
     }
