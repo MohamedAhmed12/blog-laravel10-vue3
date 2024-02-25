@@ -1,11 +1,11 @@
 <script setup>
 import { ref } from "vue";
-import axios from "../../plugins/axios";
 import LoginForm from "../../components/LoginForm.vue";
 
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 
+const axios = inject("axios");
 const store = useStore();
 const router = useRouter();
 const formData = ref({

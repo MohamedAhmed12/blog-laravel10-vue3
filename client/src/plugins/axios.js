@@ -24,4 +24,10 @@ axiosInstance.interceptors.request.use(
   }
 );
 
-export default axiosInstance;
+export default {
+    install(app) {
+      app.config.globalProperties.$axios = axiosInstance;
+      app.provide("axios", axiosInstance);
+    },
+  };
+  

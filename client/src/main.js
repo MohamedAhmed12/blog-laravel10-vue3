@@ -7,6 +7,7 @@ import * as components from "vuetify/components";
 import * as directives from "vuetify/directives";
 import App from "./App.vue";
 import toastify from "./plugins/toastify";
+import axios from "./plugins/axios";
 import router from "./router";
 import store from "./store";
 
@@ -20,4 +21,5 @@ app.use(router);
 app.use(store);
 app.use(vuetify);
 app.use(toastify);
+app.use(axios);
 app.mount("#app");
