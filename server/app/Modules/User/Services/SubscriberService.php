@@ -3,10 +3,10 @@
 namespace App\Modules\User\Services;
 
 use App\Modules\User\Models\User;
-use Illuminate\Support\Facades\Crypt;
 use App\Modules\User\Constants\UserRoles;
-use App\Modules\User\DTOs\CreateSubscriberDTO;
 use Illuminate\Database\Eloquent\Collection;
+use App\Modules\User\DTOs\CreateSubscriberDTO;
+use App\Modules\User\DTOs\UpdateSubscriberDTO;
 
 class SubscriberService
 {
@@ -23,6 +23,14 @@ class SubscriberService
             'password' =>  $dto->password,
             'role' => UserRoles::SUBSCRIBER,
         ]);
+    }
+
+    public function updateSubscriber(int $id, UpdateSubscriberDTO $updateSubscriberDTO): User
+    {
+        $subscriber = User::findOrFail($id);
+        $subscriber->update($updateSubscriberDTO->toArray());
+
+        return $subscriber;
     }
 
     public function deleteSubscriber(int $id): void

@@ -7,6 +7,8 @@ use App\Modules\User\DTOs\CreateSubscriberDTO;
 use App\Modules\User\Services\SubscriberService;
 use Illuminate\Routing\Controller as BaseController;
 use App\Modules\User\FormRequests\CreateSubscriberRequest;
+use App\Modules\User\FormRequests\UpdateSubscriberRequest;
+use App\Modules\User\DTOs\UpdateSubscriberDTO;
 
 class SubscriberController extends BaseController
 {
@@ -33,6 +35,14 @@ class SubscriberController extends BaseController
         return response()->json($subscriber, 201);
     }
 
+    public function update(UpdateSubscriberRequest $request, int $id): JsonResponse
+    {
+        $validatedData = $request->validated();
+        $updateSubscriberDTO = new UpdateSubscriberDTO(...$validatedData);
+        $subscriber = $this->subscriberService->updateSubscriber($id, $updateSubscriberDTO);
+
+        return response()->json($subscriber);
+    }
 
     public function destroy(int $id): JsonResponse
     {
