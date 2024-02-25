@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed, inject,nextTick } from "vue";
+import { ref, onMounted, computed, inject, nextTick } from "vue";
 import { mdiPencil, mdiDelete } from "@mdi/js";
 import axios from "../../../plugins/axios";
 import SvgIcon from "@jamescoyle/vue-icon";
@@ -126,16 +126,34 @@ const createSubscriber = async () => {
   }
 };
 
+const updateSubscriber = async () => {
+    try {
+    await axios.post(
+      `subscribers/${editedSubscriber.value.id}`,
+      editedSubscriber.value
+    );
+
+    Object.assign(subscribers.value[editedIndex.value], editedSubscriber.value);
+    editSubscriber.value = [];
+    errors.value = [];
+    close();
+  } catch (error) {
+    if (error?.response?.data?.errors) {
+      errors.value = error.response.data.errors;
+    }
+  }
+};
+
 const save = () => {
   if (editedIndex.value > -1) {
-    Object.assign(subscribers.value[editedIndex.value], editedSubscriber.value);
+    updateSubscriber();
   } else {
     createSubscriber();
   }
 };
 </script>
-
-<template>
+    
+    <template>
   <v-container>
     <v-card>
       <!-- search bar  -->
@@ -272,9 +290,7 @@ const save = () => {
     </v-card>
   </v-container>
 </template>
-
-
-
+    
 <style scoped>
 .pointer {
   cursor: pointer;
