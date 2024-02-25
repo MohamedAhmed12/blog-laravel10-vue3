@@ -1,9 +1,10 @@
 <script setup>
 import { ref, onMounted, computed, inject, nextTick } from "vue";
 import { mdiPencil, mdiDelete } from "@mdi/js";
-import axios from "../../../plugins/axios";
 import SvgIcon from "@jamescoyle/vue-icon";
+import DeleteModal from "../../../components/dashboard/subscribers/DeleteModal.vue";
 
+const axios = inject("axios");
 const toast = inject("toast");
 const subscribers = ref([]);
 const headers = ref([]);
@@ -12,12 +13,14 @@ const dialog = ref(false);
 const dialogDelete = ref(false);
 const editedIndex = ref(-1);
 const editedSubscriber = ref({
+  id: "",
   name: "",
   username: "",
   password: "",
   status: "",
 });
 const defaultSubscriber = ref({
+  id: "",
   name: "",
   username: "",
   password: "",
@@ -83,17 +86,6 @@ const deleteSubscriber = (subscriber) => {
   editedIndex.value = subscribers.value.indexOf(subscriber);
   editedSubscriber.value = { ...subscriber };
   dialogDelete.value = true;
-};
-
-const deleteSubscriberConfirm = async () => {
-  try {
-    await axios.delete(`subscribers/${editedSubscriber.value.id}`);
-    subscribers.value.splice(editedIndex.value, 1);
-    closeDelete();
-    toast.success("Deleted successfully");
-  } catch (error) {
-    console.log(error);
-  }
 };
 
 const close = () => {
@@ -239,29 +231,26 @@ const save = () => {
             </v-dialog>
 
             <!-- delete dialog  -->
-            <v-dialog v-model="dialogDelete" max-width="700px">
-              <v-card>
-                <v-card-title class="text-h5"
-                  >Are you sure you want to delete this item?</v-card-title
-                >
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    color="blue-darken-1"
-                    variant="text"
-                    @click="closeDelete"
-                    >Cancel</v-btn
-                  >
-                  <v-btn
-                    color="blue-darken-1"
-                    variant="text"
-                    @click="deleteSubscriberConfirm"
-                    >OK</v-btn
-                  >
-                  <v-spacer></v-spacer>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
+            <DeleteModal
+              :dialogDelete="dialogDelete"
+              :defaultSubscriber="defaultSubscriber"
+              :editedSubscriber="editedSubscriber"
+              :editedIndex="editedIndex"
+              :endPoint="`subscribers/${editedSubscriber?.id}`"
+              @update:dialogDelete="dialogDelete = false"
+              @update:editedSubscriber="
+                (val) => {
+                  editedSubscriber = value;
+                }
+              "
+              @update:editedIndex="
+                (val) => {
+                  editedIndex = value;
+                }
+              "
+              @delete-success="subscribers.splice(editedIndex, 1)"
+            />
+          
           </v-toolbar>
         </template>
 
