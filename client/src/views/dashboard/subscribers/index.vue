@@ -90,6 +90,7 @@ const deleteSubscriberConfirm = async () => {
     await axios.delete(`subscribers/${editedSubscriber.value.id}`);
     subscribers.value.splice(editedIndex.value, 1);
     closeDelete();
+    toast.success("Deleted successfully");
   } catch (error) {
     console.log(error);
   }
@@ -115,10 +116,11 @@ const createSubscriber = async () => {
   try {
     await axios.post(`subscribers`, editedSubscriber.value);
 
-    subscribers.value.push(editedSubscriber.value);
+    subscribers.value.push({ ...editedSubscriber.value, role: "subscriber" });
     editSubscriber.value = [];
     errors.value = [];
     close();
+    toast.success("Created successfully");
   } catch (error) {
     if (error?.response?.data?.errors) {
       errors.value = error.response.data.errors;
@@ -127,7 +129,7 @@ const createSubscriber = async () => {
 };
 
 const updateSubscriber = async () => {
-    try {
+  try {
     await axios.post(
       `subscribers/${editedSubscriber.value.id}`,
       editedSubscriber.value
@@ -137,6 +139,7 @@ const updateSubscriber = async () => {
     editSubscriber.value = [];
     errors.value = [];
     close();
+    toast.success("Updated successfully");
   } catch (error) {
     if (error?.response?.data?.errors) {
       errors.value = error.response.data.errors;
