@@ -22,7 +22,7 @@ class BlogFactory extends Factory
         return [
             'title' => fake()->name(),
             'image' => fake()->image(),
-            'content' => fake()->sentences(),
+            'content' => fake()->sentence(),
         ];
     }
 }
