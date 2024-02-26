@@ -208,6 +208,7 @@ const save = () => {
           <SearchModal
             :searchModal="searchModal"
             :fields="filteredSearchFields"
+            :statuses="['active', 'inactive']"
             @close="searchModal = false"
             @changed="handleAdvancedSearch"
           />

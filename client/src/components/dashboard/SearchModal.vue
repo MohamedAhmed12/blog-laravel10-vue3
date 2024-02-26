@@ -7,6 +7,7 @@ const emits = defineEmits(["search", "close"]);
 const props = defineProps({
   searchModal: Boolean,
   fields: Array,
+  statuses: Array,
 });
 
 const formData = ref({});
@@ -32,17 +33,25 @@ const close = () => {
               :key="index"
               cols="12"
             >
+              <!-- TO DO: add type for each field and put the condition upon that type replacing current hard coding field name -->
+              <v-date-picker
+                v-if="field == 'published_at'"
+                v-model="formData[field]"
+                :label="field"
+                header="Published at"
+                type="date"
+              ></v-date-picker>
+              <v-select
+                v-else-if="field != 'status'"
+                v-model="formData[field]"
+                :items="statuses"
+                :label="field"
+              ></v-select>
               <v-text-field
-                v-if="field != 'status'"
+                v-else
                 v-model="formData[field]"
                 :label="field"
               ></v-text-field>
-              <v-select
-                v-else
-                v-model="formData[field]"
-                :items="['active', 'inactive']"
-                :label="field"
-              ></v-select>
             </v-col>
           </v-row>
           <v-card-actions>
