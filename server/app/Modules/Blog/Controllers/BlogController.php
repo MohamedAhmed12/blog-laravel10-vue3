@@ -21,4 +21,11 @@ class BlogController extends BaseController
 
         return response()->json($subscriberDTOs);
     }
+
+    public function destroy(int $id): JsonResponse
+    {
+        $this->blogService->deleteBlog($id);
+
+        return response()->json(null, 204);
+    }
 }

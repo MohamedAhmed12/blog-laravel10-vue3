@@ -11,4 +11,10 @@ class BlogService
     {
         return Blog::all();
     }
+
+    public function deleteBlog(int $id): void
+    {
+        $subscriber = Blog::findOrFail($id);
+        $subscriber->delete();
+    }
 }
