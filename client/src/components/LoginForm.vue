@@ -4,6 +4,7 @@ import { ref } from "vue";
 const props = defineProps({
   login: Function,
   formData: Object,
+  errors: Object,
 });
 
 const onSubmit = () => {
@@ -24,6 +25,7 @@ const onSubmit = () => {
                 label="username"
                 type="text"
                 required
+                :error-messages="errors['username']"
               ></v-text-field>
 
               <v-text-field
@@ -32,10 +34,11 @@ const onSubmit = () => {
                 label="Password"
                 type="password"
                 required
+                :error-messages="errors['password']"
               ></v-text-field>
-              <a href="#" class="text-body-2 font-weight-regular"
-                >Forgot Password?</a
-              >
+              <a href="#" class="text-body-2 font-weight-regular">
+                Forgot Password?
+              </a>
 
               <v-btn
                 type="submit"
@@ -59,5 +62,4 @@ const onSubmit = () => {
 </template>
 
 <style scoped>
-
 </style>
