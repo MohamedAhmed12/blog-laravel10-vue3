@@ -6,8 +6,8 @@ const toast = inject("toast");
 
 const props = defineProps({
   dialogDelete: Boolean,
-  defaultSubscriber: Object,
-  editedSubscriber: Object,
+  defaultObject: Object,
+  editedObject: Object,
   editedIndex: Number,
   endPoint: String,
 });
@@ -16,10 +16,10 @@ const emits = defineEmits(["update:dialogDelete", "delete-success"]);
 
 const emitCloseDelete = () => {
   emits("update:dialogDelete");
-  emits("update:editedSubscriber", { ...props.defaultSubscriber.value });
+  emits("update:editedObject", { ...props.defaultObject.value });
   emits("update:editedIndex", -1);
 };
-const deleteSubscriberConfirm = async () => {
+const deleteConfirm = async () => {
   try {
     await axios.delete(props.endPoint);
     emits("delete-success", "Deleted successfully");
@@ -45,7 +45,7 @@ const deleteSubscriberConfirm = async () => {
         <v-btn
           color="blue-darken-1"
           variant="text"
-          @click="deleteSubscriberConfirm"
+          @click="deleteConfirm"
         >
           OK
         </v-btn>
