@@ -7,6 +7,10 @@ import SubscriberIndex from "../views/dashboard/subscribers/index.vue";
 
 const routes = [
   {
+    path: "/",
+    redirect: "/dashboard/blogs",
+  },
+  {
     path: "/auth/login",
     component: Login,
   },
