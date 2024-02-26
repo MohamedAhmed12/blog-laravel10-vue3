@@ -44,7 +44,7 @@ class SubscriberService
     {
         return User::where(function ($query) use ($searchSubscriberDTO) {
             $query->where('role', UserRoles::SUBSCRIBER);
-            
+
             if (!empty($searchSubscriberDTO->name)) {
                 $query->where('name', 'like', '%' . $searchSubscriberDTO->name . '%');
             }
@@ -52,7 +52,7 @@ class SubscriberService
                 $query->where('username', 'like', '%' . $searchSubscriberDTO->username . '%');
             }
             if (!empty($searchSubscriberDTO->status)) {
-                $query->where('status', 'like', '%' . $searchSubscriberDTO->status . '%');
+                $query->where('status',  $searchSubscriberDTO->status);
             }
         })->get();
     }
