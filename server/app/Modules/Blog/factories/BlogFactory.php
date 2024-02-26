@@ -21,7 +21,7 @@ class BlogFactory extends Factory
     {
         return [
             'title' => fake()->name(),
-            'image' => fake()->image(),
+            'image' => 'https://picsum.photos/id/237/200/300',
             'content' => fake()->sentence(),
         ];
     }
