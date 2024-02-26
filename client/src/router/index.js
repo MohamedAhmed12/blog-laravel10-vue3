@@ -2,7 +2,7 @@ import { authMiddleware } from "@/middlewares/authMiddleware";
 import { createRouter, createWebHistory } from "vue-router";
 import DashboardLayout from "../layouts/DashboardLayout.vue";
 import Login from "../views/auth/Login.vue";
-import BlogList from "../views/dashboard/blogs/BlogList.vue";
+import BlogList from "../views/dashboard/blogs/index.vue";
 import SubscriberIndex from "../views/dashboard/subscribers/index.vue";
 import { adminMiddleware } from "@/middlewares/adminMiddleware";
 
