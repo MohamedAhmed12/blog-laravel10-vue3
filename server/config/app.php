@@ -174,6 +174,7 @@ return [
          * Application Service Providers...
          */
         App\Modules\User\UserServiceProvider::class,
+        App\Modules\User\BlogServiceProvider::class,
     ])->toArray(),
 
     /*
