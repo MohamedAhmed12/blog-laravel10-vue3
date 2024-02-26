@@ -4,11 +4,13 @@ namespace App\Modules\User\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use App\Modules\User\DTOs\CreateSubscriberDTO;
+use App\Modules\User\DTOs\SearchSubscriberDTO;
+use App\Modules\User\DTOs\UpdateSubscriberDTO;
 use App\Modules\User\Services\SubscriberService;
 use Illuminate\Routing\Controller as BaseController;
 use App\Modules\User\FormRequests\CreateSubscriberRequest;
+use App\Modules\User\FormRequests\SearchSubscriberRequest;
 use App\Modules\User\FormRequests\UpdateSubscriberRequest;
-use App\Modules\User\DTOs\UpdateSubscriberDTO;
 
 class SubscriberController extends BaseController
 {
@@ -18,7 +20,7 @@ class SubscriberController extends BaseController
     {
         $this->subscriberService = $subscriberService;
     }
-    
+
     public function index(): JsonResponse
     {
         $subscriberDTOs = $this->subscriberService->listSubscribers();
@@ -49,5 +51,14 @@ class SubscriberController extends BaseController
         $this->subscriberService->deleteSubscriber($id);
 
         return response()->json(null, 204);
+    }
+
+    public function search(SearchSubscriberRequest $request)
+    {
+        $validatedData = $request->validated();
+        $searchSubscriberRequest = new SearchSubscriberDTO(...$validatedData);
+        $users = $this->subscriberService->search($searchSubscriberRequest);
+
+        return response()->json($users);
     }
 }
