@@ -28,7 +28,7 @@ class CreateBlogRequest extends FormRequest
             'title' => 'required|string|max:255',
             'image' => 'required|file',
             'content' => 'required|string|max:255',
-            'published_at' => 'required|date',
+            'published_at' => 'required|string',
             'status' => 'required|string|in:' .  implode(',', BlogStatuses::getAll()),
         ];
     }

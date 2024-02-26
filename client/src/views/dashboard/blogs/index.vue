@@ -8,7 +8,7 @@ import {
   watch,
   reactive,
 } from "vue";
-import { mdiPencil, mdiDelete, mdiClose } from "@mdi/js";
+import { mdiPencil, mdiDelete, mdiClose, mdiCamera } from "@mdi/js";
 import SvgIcon from "@jamescoyle/vue-icon";
 import DeleteModal from "../../../components/dashboard/DeleteModal.vue";
 import SearchModal from "../../../components/dashboard/SearchModal.vue";
@@ -18,29 +18,31 @@ const toast = inject("toast");
 
 const blogs = ref([]);
 const headers = ref([]);
+const errors = ref([]);
+const dialog = ref(false);
 const dialogDelete = ref(false);
 const searchModal = ref(false);
 const editedIndex = ref(-1);
 const editedBlog = ref({
   id: "",
   title: "",
-  image: "",
+  image: null,
   content: "",
-  published_at: "",
+  published_at: null,
   status: "",
 });
 const defaultBlog = reactive({
   id: "",
   title: "",
-  image: "",
+  image: null,
   content: "",
-  published_at: "",
+  published_at: null,
   status: "",
 });
 const searchQuery = reactive({
   title: "",
   content: "",
-  published_at: "",
+  published_at: null,
   status: "",
 });
 const isSearchActive = ref(false);
@@ -87,6 +89,9 @@ onMounted(async () => {
   }
 });
 
+const formTitle = computed(() => {
+  return editedIndex.value === -1 ? "New Item" : "Edit Item";
+});
 const filteredSearchFields = computed(() =>
   Object.keys(searchQuery).filter((field) => field !== "title")
 );
@@ -119,10 +124,71 @@ const clearSearch = async () => {
   }
 };
 
+const close = () => {
+  dialog.value = false;
+  nextTick(() => {
+    editedBlog.value = { ...defaultBlog.value };
+    editedIndex.value = -1;
+  });
+};
+
+const convertToFormData = () => {
+  const formData = new FormData();
+  for (const key in editedBlog.value) {
+    if (editedBlog.value[key] !== null && editedBlog.value[key] !== "") {
+      let val = editedBlog.value[key];
+
+      if (key === "image" && val) {
+        val = val instanceof File ? val : val[0];
+      } else if (key === "published_at" && val) {
+        val = new Date(val).toISOString().split("T")[0];
+      }
+
+      formData.append(key, val);
+    }
+  }
+  return formData;
+};
+
+const createBlog = async () => {
+  try {
+    const data = convertToFormData();
+    const res = await axios.post(`blogs`, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    blogs.value.push({
+      ...editedBlog.value,
+      image: res.data.image,
+      published_at: res.data.published_at,
+    });
+    editedBlog.value = {
+      ...defaultBlog,
+    };
+    errors.value = [];
+    close();
+    toast.success("Created successfully");
+  } catch (error) {
+    if (error?.response?.data?.errors) {
+      errors.value = error.response.data.errors;
+    }
+  }
+};
+
 const deleteBlog = (blog) => {
   editedIndex.value = blogs.value.indexOf(blog);
   editedBlog.value = { ...blog };
   dialogDelete.value = true;
+};
+
+const save = () => {
+  if (editedIndex.value > -1) {
+    updateSubscriber();
+  } else {
+    createBlog();
+  }
 };
 </script>
     
@@ -178,6 +244,76 @@ const deleteBlog = (blog) => {
             <v-toolbar-title>Blogs</v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
             <v-spacer></v-spacer>
+
+            <!-- edit dialog  -->
+            <v-dialog v-model="dialog" max-width="700px">
+              <template v-slot:activator="{ props }">
+                <v-btn color="primary" dark class="mb-2" v-bind="props">
+                  New Item
+                </v-btn>
+              </template>
+              <v-card>
+                <v-card-title>
+                  <span class="text-h5">{{ formTitle }}</span>
+                </v-card-title>
+
+                <v-card-text>
+                  <v-container>
+                    <v-row>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field
+                          v-model="editedBlog.title"
+                          label="Title"
+                          :error-messages="errors['title']"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field
+                          v-model="editedBlog.content"
+                          label="Content"
+                          :error-messages="errors['content']"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-date-picker
+                          v-model="editedBlog.published_at"
+                          header="Published at"
+                          type="date"
+                          :error-messages="errors['published_at']"
+                        ></v-date-picker>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-select
+                          v-model="editedBlog.status"
+                          :items="['draft', 'published', 'archived']"
+                          label="Status"
+                          :error-messages="errors['status']"
+                        ></v-select>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-file-input
+                          label="Upload Image"
+                          :prepend-icon="mdiCamera"
+                          accept="image/*"
+                          v-model="editedBlog.image"
+                          :error-messages="errors['image']"
+                        ></v-file-input>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-card-text>
+
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="blue-darken-1" variant="text" @click="close">
+                    Cancel
+                  </v-btn>
+                  <v-btn color="blue-darken-1" variant="text" @click="save">
+                    Save
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
 
             <!-- delete dialog  -->
             <DeleteModal
