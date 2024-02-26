@@ -33,10 +33,6 @@ class Blog extends Model
         'remember_token',
     ];
 
-    protected $casts = [
-        'published_at' => 'datetime',
-    ];
-
     protected static function newFactory(): BlogFactory
     {
         return BlogFactory::new();
