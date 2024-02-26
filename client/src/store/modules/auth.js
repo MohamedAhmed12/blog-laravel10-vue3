@@ -1,7 +1,11 @@
 import { ref } from "vue";
 
 const state = {
-  user: ref(JSON.parse(localStorage.getItem("user")) || null),
+  user: ref(
+    localStorage.getItem("user") != "undefined"
+      ? JSON.parse(localStorage.getItem("user"))
+      : null
+  ),
   token: ref(localStorage.getItem("token") || null),
 };
 
