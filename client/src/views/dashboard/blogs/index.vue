@@ -10,12 +10,31 @@ import {
 } from "vue";
 import { mdiPencil, mdiDelete, mdiClose } from "@mdi/js";
 import SvgIcon from "@jamescoyle/vue-icon";
+import DeleteModal from "../../../components/dashboard/DeleteModal.vue";
 
 const axios = inject("axios");
 const toast = inject("toast");
 
 const blogs = ref([]);
 const headers = ref([]);
+const dialogDelete = ref(false);
+const editedIndex = ref(-1);
+const editedBlog = ref({
+  id: "",
+  title: "",
+  image: "",
+  content: "",
+  published_at: "",
+  status: "",
+});
+const defaultBlog = reactive({
+  id: "",
+  title: "",
+  image: "",
+  content: "",
+  published_at: "",
+  status: "",
+});
 
 onMounted(async () => {
   try {
@@ -25,7 +44,10 @@ onMounted(async () => {
     if (blogs.value.length > 0) {
       const keys = Object.keys(blogs.value[0]);
       headers.value = keys
-        .filter((key) => !["id", "created_at", "updated_at", "deleted_at"].includes(key))
+        .filter(
+          (key) =>
+            !["id", "created_at", "updated_at", "deleted_at"].includes(key)
+        )
         .map((key) => {
           return {
             title: key.charAt(0).toUpperCase() + key.slice(1),
@@ -39,6 +61,12 @@ onMounted(async () => {
     toast.error(error);
   }
 });
+
+const deleteBlog = (blog) => {
+  editedIndex.value = blogs.value.indexOf(blog);
+  editedBlog.value = { ...blog };
+  dialogDelete.value = true;
+};
 </script>
     
 <template>
@@ -51,6 +79,26 @@ onMounted(async () => {
             <v-divider class="mx-4" inset vertical></v-divider>
             <v-spacer></v-spacer>
 
+            <!-- delete dialog  -->
+            <DeleteModal
+              :dialogDelete="dialogDelete"
+              :defaultObject="defaultBlog"
+              :editedObject="editedBlog"
+              :editedIndex="editedIndex"
+              :endPoint="`blogs/${editedBlog?.id}`"
+              @update:dialogDelete="dialogDelete = false"
+              @update:editedObject="
+                (val) => {
+                  editedBlog = value;
+                }
+              "
+              @update:editedIndex="
+                (val) => {
+                  editedIndex = value;
+                }
+              "
+              @delete-success="blogs.splice(editedIndex, 1)"
+            />
           </v-toolbar>
         </template>
 
@@ -66,13 +114,13 @@ onMounted(async () => {
               <svg-icon
                 type="mdi"
                 :path="mdiPencil"
-                @click="editSubscriber(item)"
+                @click="editBlog(item)"
                 class="mr-2 pointer"
               ></svg-icon>
               <svg-icon
                 type="mdi"
                 :path="mdiDelete"
-                @click="deleteSubscriber(item)"
+                @click="deleteBlog(item)"
                 class="pointer"
               ></svg-icon>
             </td>
@@ -87,7 +135,7 @@ onMounted(async () => {
 .pointer {
   cursor: pointer;
 }
-.actions-cell{
-    min-width: 100px;
+.actions-cell {
+  min-width: 100px;
 }
 </style>
