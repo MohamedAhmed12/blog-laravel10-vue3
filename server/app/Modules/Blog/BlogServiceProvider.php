@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\User;
+namespace App\Modules\Blog;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider;
 

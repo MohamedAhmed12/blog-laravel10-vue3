@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Modules\User\Models\User;
 use App\Modules\User\Constants\UserRoles;
-use Illuminate\Support\Facades\Crypt;
 
 class UserSeeder extends Seeder
 {
