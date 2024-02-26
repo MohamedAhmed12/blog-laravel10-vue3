@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('status')->default(UserStatuses::INACTIVE);
             $table->string('role')->default(UserRoles::SUBSCRIBER);
             $table->rememberToken();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
