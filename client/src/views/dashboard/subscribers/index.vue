@@ -63,7 +63,7 @@ onMounted(async () => {
     if (subscribers.value.length > 0) {
       const keys = Object.keys(subscribers.value[0]);
       headers.value = keys
-        .filter((key) => !["id", "created_at", "updated_at"].includes(key))
+        .filter((key) => !["id", "created_at", "updated_at", "deleted_at"].includes(key))
         .map((key) => {
           return {
             title: key.charAt(0).toUpperCase() + key.slice(1),
@@ -223,7 +223,7 @@ const save = () => {
       <v-data-table :headers="headers" :items="subscribers">
         <template v-slot:top>
           <v-toolbar flat>
-            <v-toolbar-title>My CRUD</v-toolbar-title>
+            <v-toolbar-title>Subscribers</v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
             <v-spacer></v-spacer>
 
