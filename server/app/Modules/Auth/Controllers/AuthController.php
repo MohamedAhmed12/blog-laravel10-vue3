@@ -3,6 +3,7 @@
 namespace App\Modules\Auth\Controllers;
 
 
+use Illuminate\Http\Request;
 use App\Modules\Auth\DTOs\LoginDTO;
 use App\Modules\Auth\Services\AuthService;
 use App\Modules\Auth\FormRequests\LoginFormRequest;
@@ -38,5 +39,11 @@ class AuthController extends BaseController
         } else {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
+    }
+
+    public function logout(Request $request)
+    {
+        $this->authService->logout($request->user());
+        return response()->json(['message' => 'Logged out successfully']);
     }
 }
