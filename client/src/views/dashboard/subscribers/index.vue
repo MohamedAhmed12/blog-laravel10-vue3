@@ -10,7 +10,7 @@ import {
 } from "vue";
 import { mdiPencil, mdiDelete, mdiClose } from "@mdi/js";
 import SvgIcon from "@jamescoyle/vue-icon";
-import DeleteModal from "../../../components/dashboard/subscribers/DeleteModal.vue";
+import DeleteModal from "../../../components/dashboard/DeleteModal.vue";
 import SearchModal from "../../../components/dashboard/SearchModal.vue";
 
 const axios = inject("axios");
@@ -23,7 +23,7 @@ const dialog = ref(false);
 const dialogDelete = ref(false);
 const searchModal = ref(false);
 const editedIndex = ref(-1);
-const editedSubscriber = reactive({
+const editedSubscriber = ref({
   id: "",
   name: "",
   username: "",
@@ -48,8 +48,12 @@ watch(
   searchQuery,
   async (newValue, oldValue) => {
     await search();
-    if (newValue.name == "" && newValue.username == "" && newValue.status=="") {
-        isSearchActive.value = false;
+    if (
+      newValue.name == "" &&
+      newValue.username == "" &&
+      newValue.status == ""
+    ) {
+      isSearchActive.value = false;
     }
   },
   { deep: true }
@@ -63,7 +67,10 @@ onMounted(async () => {
     if (subscribers.value.length > 0) {
       const keys = Object.keys(subscribers.value[0]);
       headers.value = keys
-        .filter((key) => !["id", "created_at", "updated_at", "deleted_at"].includes(key))
+        .filter(
+          (key) =>
+            !["id", "created_at", "updated_at", "deleted_at"].includes(key)
+        )
         .map((key) => {
           return {
             title: key.charAt(0).toUpperCase() + key.slice(1),
@@ -112,7 +119,7 @@ const search = async () => {
     subscribers.value = data;
     isSearchActive.value = true;
   } catch (error) {
-    toast.error(error);
+    console.log(error);
   }
 };
 
@@ -194,7 +201,6 @@ const save = () => {
             dark
             variant="text"
             class="ml-6"
-            v-bind="props"
             @click="searchModal = true"
           >
             Advanced search
@@ -290,12 +296,12 @@ const save = () => {
             <!-- delete dialog  -->
             <DeleteModal
               :dialogDelete="dialogDelete"
-              :defaultSubscriber="defaultSubscriber"
-              :editedSubscriber="editedSubscriber"
+              :defaultObject="defaultSubscriber"
+              :editedObject="editedSubscriber"
               :editedIndex="editedIndex"
               :endPoint="`subscribers/${editedSubscriber?.id}`"
               @update:dialogDelete="dialogDelete = false"
-              @update:editedSubscriber="
+              @update:editedObject="
                 (val) => {
                   editedSubscriber = value;
                 }
