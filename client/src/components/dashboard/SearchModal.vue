@@ -18,7 +18,6 @@ const search = () => {
 const close = () => {
   emits("close");
 };
-console.log(props.fields);
 </script>
 
 <template>
