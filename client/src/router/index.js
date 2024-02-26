@@ -4,6 +4,7 @@ import DashboardLayout from "../layouts/DashboardLayout.vue";
 import Login from "../views/auth/Login.vue";
 import BlogList from "../views/dashboard/blogs/BlogList.vue";
 import SubscriberIndex from "../views/dashboard/subscribers/index.vue";
+import { adminMiddleware } from "@/middlewares/adminMiddleware";
 
 const routes = [
   {
@@ -26,6 +27,7 @@ const routes = [
       {
         path: "subscribers",
         component: SubscriberIndex,
+        beforeEnter: adminMiddleware,
       },
     ],
   },
