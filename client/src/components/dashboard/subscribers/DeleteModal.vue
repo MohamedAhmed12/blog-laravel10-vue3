@@ -1,5 +1,5 @@
 <script setup>
-import { defineEmits, defineProps, inject } from "vue";
+import { defineProps, inject } from "vue";
 
 const axios = inject("axios");
 const toast = inject("toast");

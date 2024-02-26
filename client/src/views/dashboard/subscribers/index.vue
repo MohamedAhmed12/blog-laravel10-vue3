@@ -1,31 +1,59 @@
 <script setup>
-import { ref, onMounted, computed, inject, nextTick } from "vue";
-import { mdiPencil, mdiDelete } from "@mdi/js";
+import {
+  computed,
+  inject,
+  nextTick,
+  onMounted,
+  ref,
+  watch,
+  reactive,
+} from "vue";
+import { mdiPencil, mdiDelete, mdiClose } from "@mdi/js";
 import SvgIcon from "@jamescoyle/vue-icon";
 import DeleteModal from "../../../components/dashboard/subscribers/DeleteModal.vue";
+import SearchModal from "../../../components/dashboard/SearchModal.vue";
 
 const axios = inject("axios");
 const toast = inject("toast");
+
 const subscribers = ref([]);
 const headers = ref([]);
 const errors = ref([]);
 const dialog = ref(false);
 const dialogDelete = ref(false);
+const searchModal = ref(false);
 const editedIndex = ref(-1);
-const editedSubscriber = ref({
+const editedSubscriber = reactive({
   id: "",
   name: "",
   username: "",
   password: "",
   status: "",
 });
-const defaultSubscriber = ref({
+const defaultSubscriber = reactive({
   id: "",
   name: "",
   username: "",
   password: "",
   status: "",
 });
+const searchQuery = reactive({
+  name: "",
+  username: "",
+  status: "",
+});
+const isSearchActive = ref(false);
+
+watch(
+  searchQuery,
+  async (newValue, oldValue) => {
+    await search();
+    if (newValue.name == "" && newValue.username == "" && newValue.status=="") {
+        isSearchActive.value = false;
+    }
+  },
+  { deep: true }
+);
 
 onMounted(async () => {
   try {
@@ -53,6 +81,10 @@ onMounted(async () => {
 const formTitle = computed(() => {
   return editedIndex.value === -1 ? "New Item" : "Edit Item";
 });
+
+const filteredSearchFields = computed(() =>
+  Object.keys(searchQuery).filter((field) => field !== "name")
+);
 
 const initialize = () => {
   const subscribers = [
@@ -88,16 +120,32 @@ const deleteSubscriber = (subscriber) => {
   dialogDelete.value = true;
 };
 
-const close = () => {
-  dialog.value = false;
-  nextTick(() => {
-    editedSubscriber.value = { ...defaultSubscriber.value };
-    editedIndex.value = -1;
-  });
+const handleAdvancedSearch = (data) => {
+  for (const key in data) {
+    if (searchQuery.hasOwnProperty(key)) {
+      searchQuery[key] = data[key];
+    }
+  }
 };
 
-const closeDelete = () => {
-  dialogDelete.value = false;
+const search = async () => {
+  try {
+    const { data } = await axios.post("subscribers/search", searchQuery);
+    subscribers.value = data;
+    isSearchActive.value = true;
+  } catch (error) {
+    toast.error(error);
+  }
+};
+
+const clearSearch = async () => {
+  for (const key in searchQuery) {
+    searchQuery[key] = "";
+  }
+};
+
+const close = () => {
+  dialog.value = false;
   nextTick(() => {
     editedSubscriber.value = { ...defaultSubscriber.value };
     editedIndex.value = -1;
@@ -153,14 +201,45 @@ const save = () => {
     <v-card>
       <!-- search bar  -->
       <template v-slot:text>
-        <v-text-field
-          v-model="search"
-          label="Search"
-          prepend-inner-icon="mdi-magnify"
-          single-line
-          variant="outlined"
-          hide-details
-        ></v-text-field>
+        <div class="d-flex align-center">
+          <v-text-field
+            v-model="searchQuery.name"
+            label="Search by name"
+            prepend-inner-icon="mdi-magnify"
+            single-line
+            variant="outlined"
+            hide-details
+            @keydown="search"
+          ></v-text-field>
+          <v-btn
+            color="primary"
+            dark
+            variant="text"
+            class="ml-6"
+            v-bind="props"
+            @click="searchModal = true"
+          >
+            Advanced search
+          </v-btn>
+          <SearchModal
+            :searchModal="searchModal"
+            :fields="filteredSearchFields"
+            @close="searchModal = false"
+            @changed="handleAdvancedSearch"
+          />
+        </div>
+        <div
+          v-if="isSearchActive"
+          class="d-flex align-center mt-2 search-results-indicator"
+        >
+          <span>Showing results for your search</span>
+          <svg-icon
+            type="mdi"
+            :path="mdiClose"
+            class="mr-2 pointer"
+            @click="clearSearch"
+          ></svg-icon>
+        </div>
       </template>
 
       <v-data-table :headers="headers" :items="subscribers">
@@ -250,7 +329,6 @@ const save = () => {
               "
               @delete-success="subscribers.splice(editedIndex, 1)"
             />
-          
           </v-toolbar>
         </template>
 
