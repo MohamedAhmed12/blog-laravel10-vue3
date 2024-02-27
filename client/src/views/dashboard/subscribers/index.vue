@@ -142,7 +142,7 @@ const createSubscriber = async () => {
     await axios.post(`subscribers`, editedSubscriber.value);
 
     subscribers.value.push({ ...editedSubscriber.value, role: "subscriber" });
-    editSubscriber.value = [];
+    editedSubscriber.value = [];
     errors.value = [];
     close();
     toast.success("Created successfully");
@@ -304,12 +304,12 @@ const save = () => {
               @update:dialogDelete="dialogDelete = false"
               @update:editedObject="
                 (val) => {
-                  editedSubscriber = value;
+                  editedSubscriber = val;
                 }
               "
               @update:editedIndex="
                 (val) => {
-                  editedIndex = value;
+                  editedIndex = val;
                 }
               "
               @delete-success="subscribers.splice(editedIndex, 1)"
