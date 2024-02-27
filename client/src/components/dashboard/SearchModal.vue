@@ -42,7 +42,7 @@ const close = () => {
                 type="date"
               ></v-date-picker>
               <v-select
-                v-else-if="field != 'status'"
+                v-else-if="field == 'status'"
                 v-model="formData[field]"
                 :items="statuses"
                 :label="field"
