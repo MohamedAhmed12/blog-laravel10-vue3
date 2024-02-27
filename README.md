@@ -9,12 +9,6 @@ subscriber logged in for the first time it can’t login from other device in th
 - [Technologies Used](#technologies-used)
 - [Features](#features)
 - [Setup](#setup)
-- [Usage](#usage)
-- [Code and Flow Explanation](#code-and-flow-explanation)
-- [Challenges and Solutions](#challenges-and-solutions)
-- [Enhancements](#enhancements)
-- [Conclusion](#conclusion)
-- [Notes](#notes)
 
 ## Introduction
 
@@ -62,7 +56,7 @@ This project is built with a focus on robustness, reusability, and security, emp
 
 #### Security Features
 
-- **Device Fingerprinting**: Integrated fingerprinting technology to prevent users from logging other device after the first login.
+- **Device Fingerprinting**: Integrated device fingerprinting to prevent users from logging in from a different device after their first login.
 - **Constant Classes**: Used constant classes to manage fixed values across the application, ensuring code consistency and ease of maintenance.
 
 ## Frontend
