@@ -177,18 +177,51 @@ const createBlog = async () => {
   }
 };
 
-const deleteBlog = (blog) => {
-  editedIndex.value = blogs.value.indexOf(blog);
-  editedBlog.value = { ...blog };
-  dialogDelete.value = true;
+const updateBlog = async () => {
+  try {
+    const data = convertToFormData();
+    const res = await axios.post(`blogs/${editedBlog.value.id}`, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    Object.assign(blogs.value[editedIndex.value], {
+      ...editedBlog.value,
+      image: res.data.image,
+      published_at: res.data.published_at,
+    });
+    editedBlog.value = {
+      ...defaultBlog,
+    };
+    errors.value = [];
+    close();
+    toast.success("Updated successfully");
+  } catch (error) {
+    if (error?.response?.data?.errors) {
+      errors.value = error.response.data.errors;
+    }
+  }
 };
 
 const save = () => {
   if (editedIndex.value > -1) {
-    updateSubscriber();
+    updateBlog();
   } else {
     createBlog();
   }
+};
+
+const editBlog = (blog) => {
+  editedIndex.value = blogs.value.indexOf(blog);
+  editedBlog.value = { ...blog, image: null, published_at: null };
+  dialog.value = true;
+};
+
+const deleteBlog = (blog) => {
+  editedIndex.value = blogs.value.indexOf(blog);
+  editedBlog.value = { ...blog };
+  dialogDelete.value = true;
 };
 </script>
     
@@ -325,12 +358,12 @@ const save = () => {
               @update:dialogDelete="dialogDelete = false"
               @update:editedObject="
                 (val) => {
-                  editedBlog = value;
+                  editedBlog = val;
                 }
               "
               @update:editedIndex="
                 (val) => {
-                  editedIndex = value;
+                  editedIndex = val;
                 }
               "
               @delete-success="blogs.splice(editedIndex, 1)"
