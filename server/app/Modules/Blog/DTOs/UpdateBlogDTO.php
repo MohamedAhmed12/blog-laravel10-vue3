@@ -10,7 +10,7 @@ class UpdateBlogDTO
     public ?string $published_at;
     public ?string $status;
 
-    public function __construct(?string $title, ?string $image, ?string $content, ?string $published_at, ?string $status)
+    public function __construct(?string $title = null, ?string $image = null, ?string $content = null, ?string $published_at = null, ?string $status = null)
     {
         $this->title = $title;
         $this->image = $image;
