@@ -5,6 +5,7 @@ namespace App\Modules\Auth\Controllers;
 
 use Illuminate\Http\Request;
 use App\Modules\Auth\DTOs\LoginDTO;
+use Illuminate\Support\Facades\Log;
 use App\Modules\Auth\Services\AuthService;
 use App\Modules\Auth\FormRequests\LoginFormRequest;
 use Illuminate\Routing\Controller as BaseController;
@@ -35,9 +36,8 @@ class AuthController extends BaseController
         $res = $this->authService->login($loginDTO);
 
         if ($res) {
-            return response()->json($res, 200);
-        } else {
-            return response()->json(['message' => 'Unauthorized'], 401);
+            Log::info($res);
+            return response()->json($res['message'], $res['status']);
         }
     }
 

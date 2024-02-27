@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('status')->default(UserStatuses::INACTIVE);
             $table->string('role')->default(UserRoles::SUBSCRIBER);
+            $table->string('fingerprint')->nullable();
             $table->rememberToken();
             $table->softDeletes();
             $table->timestamps();

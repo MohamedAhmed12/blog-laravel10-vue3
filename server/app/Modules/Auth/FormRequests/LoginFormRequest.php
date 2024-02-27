@@ -26,6 +26,7 @@ class LoginFormRequest extends FormRequest
         return [
             'username' => 'required|string',
             'password' => 'required|string|min:8',
+            'fingerprint' => 'required|string',
         ];
     }
 }
