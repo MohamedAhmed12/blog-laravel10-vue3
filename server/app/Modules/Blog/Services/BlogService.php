@@ -5,6 +5,7 @@ namespace App\Modules\Blog\Services;
 use App\Modules\Blog\DTOs\CreateBlogDTO;
 use App\Modules\Blog\Models\Blog;
 use App\Modules\Blog\DTOs\SearchBlogDTO;
+use App\Modules\Blog\DTOs\UpdateBlogDTO;
 use Illuminate\Database\Eloquent\Collection;
 
 class BlogService
@@ -23,6 +24,13 @@ class BlogService
             'published_at' =>  $dto->published_at,
             'status' =>  $dto->status,
         ]);
+    }
+
+    public function updateBlog(int $id, UpdateBlogDTO $dto): Blog
+    {
+        $blog = Blog::findOrFail($id);
+        $blog->update($dto->toArray());
+        return $blog;
     }
 
     public function deleteBlog(int $id): void

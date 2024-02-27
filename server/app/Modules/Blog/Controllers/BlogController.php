@@ -5,9 +5,11 @@ namespace App\Modules\Blog\Controllers;
 use App\Modules\Blog\DTOs\CreateBlogDTO;
 use Illuminate\Http\JsonResponse;
 use App\Modules\Blog\DTOs\SearchBlogDTO;
+use App\Modules\Blog\DTOs\UpdateBlogDTO;
 use App\Modules\Blog\Services\BlogService;
 use App\Modules\Blog\FormRequests\CreateBlogRequest;
 use App\Modules\Blog\FormRequests\SearchBlogRequest;
+use App\Modules\Blog\FormRequests\UpdateBlogRequest;
 use Illuminate\Routing\Controller as BaseController;
 
 class BlogController extends BaseController
@@ -28,13 +30,27 @@ class BlogController extends BaseController
 
     public function store(CreateBlogRequest $request): JsonResponse
     {
-        $validatedData = $request->validated();        
+        $validatedData = $request->validated();
         $validatedData['image'] = $validatedData['image']->store('public/images');
-        
+
         $createBlogDTO = new CreateBlogDTO(...$validatedData);
         $subscriber = $this->blogService->createBlog($createBlogDTO);
 
         return response()->json($subscriber, 201);
+    }
+
+    public function update(UpdateBlogRequest $request, int $id): JsonResponse
+    {
+        $validatedData = $request->validated();
+
+        if (isset($validatedData['image'])) {
+            $validatedData['image'] = $validatedData['image']->store('public/images');
+        }
+
+        $updateBlogDTO = new UpdateBlogDTO(...$validatedData);
+        $blog = $this->blogService->updateBlog($id, $updateBlogDTO);
+
+        return response()->json($blog, 200);
     }
 
     public function destroy(int $id): JsonResponse
