@@ -1,9 +1,10 @@
 <script setup>
-import { ref, inject } from "vue";
+import { ref, inject, onMounted } from "vue";
 import LoginForm from "../../components/LoginForm.vue";
 
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+import FingerprintJS from "@fingerprintjs/fingerprintjs";
 
 const axios = inject("axios");
 const toast = inject("toast");
@@ -13,8 +14,13 @@ const router = useRouter();
 const formData = ref({
   username: "",
   password: "",
+  fingerprint: "",
 });
 const errors = ref([]);
+
+onMounted(async () => {
+  formData.value.fingerprint = await getFingerprint();
+});
 
 const login = async () => {
   errors.value = [];
@@ -31,12 +37,18 @@ const login = async () => {
     }
 
     if (error?.response?.status == 401) {
-      toast.error(error?.response?.statusText);
+        console.log(error?.response?.data);
+      toast.error(error?.response?.data);
     } else {
       toast.error("Something went wrong!");
     }
   }
 };
+async function getFingerprint() {
+  const fp = await FingerprintJS.load();
+  const result = await fp.get();
+  return result.visitorId;
+}
 </script>
 
 <template>
