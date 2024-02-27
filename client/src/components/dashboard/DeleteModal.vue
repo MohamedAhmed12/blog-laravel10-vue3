@@ -12,7 +12,12 @@ const props = defineProps({
   endPoint: String,
 });
 
-const emits = defineEmits(["update:dialogDelete", "delete-success"]);
+const emits = defineEmits([
+  "update:dialogDelete",
+  "update:editedObject",
+  "update:editedIndex",
+  "delete-success",
+]);
 
 const emitCloseDelete = () => {
   emits("update:dialogDelete");
@@ -42,11 +47,7 @@ const deleteConfirm = async () => {
         <v-btn color="blue-darken-1" variant="text" @click="emitCloseDelete">
           Cancel
         </v-btn>
-        <v-btn
-          color="blue-darken-1"
-          variant="text"
-          @click="deleteConfirm"
-        >
+        <v-btn color="blue-darken-1" variant="text" @click="deleteConfirm">
           OK
         </v-btn>
         <v-spacer></v-spacer>
